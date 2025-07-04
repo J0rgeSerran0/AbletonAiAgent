@@ -13,7 +13,7 @@ export const metadata: Metadata = {
   keywords: ["Ableton", "AI", "Ableton Live 12", "Ableton Live", "Ableton Live 12 documentation", "Ableton Live 12 assistant", "Ableton Live 12 learning"],
   authors: [{ name: "Rafael Saraceni", url: "https://saraceni.me/" }],
   creator: "Rafael Saraceni",
-  metadataBase: new URL("https://figma-ai-agent.vercel.app"),
+  metadataBase: new URL("https://ableton-ai-agent.vercel.app/"),
   alternates: {
     canonical: "/",
     languages: {
@@ -34,7 +34,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "Ableton Live 12 AI Assistant | Learn Ableton Live 12",
     description: "Get expert answers to Ableton Live 12 questions and learn Ableton Live 12 with AI-powered assistance for all skill levels.",
-    url: "https://figma-ai-agent.vercel.app/", // Replace with your actual URL
+    url: "https://ableton-ai-agent.vercel.app/", // Replace with your actual URL
     images: [
       {
         url: "/app_preview.png", // Path to the image in the public folder
