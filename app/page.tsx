@@ -13,24 +13,12 @@ import { toast } from "sonner"
 import { Button } from '@/components/ui/button';
 import { saEvent } from './analytics';
 
-export interface ComponentInChatHistory {
-  id: string;
-  chatId: string;
-  html: string;
-  css: string;
-  stylingNotes: string;
-  colorDetails: { hex: string, usage: string }[];
-}
-
 interface ChatHistory {
-  chat: {
-    id: string;
-    sessionId: string;
-    response: string;
-    question: string;
-    createdAt: Date;
-  },
-  component_outputs?: ComponentInChatHistory
+  id: string;
+  sessionId: string;
+  response: string;
+  question: string;
+  createdAt: Date;
 }
 
 const initialMessage = "Hello, I'm your Ableton Live 12 Assistant. How can I help you today? You can ask me about Ableton Live 12 features and usage."
@@ -67,22 +55,8 @@ export default function Chat() {
       setIsLoadingChatHistory(true);
       const response = await fetch(`/api/chat?sessionId=${sessionId}`);
       const chatHistory = await response.json();
-      setChatHistory(chatHistory
-        .map((data: any) => {
-          if (data.component_outputs) {
-            return {
-              ...data,
-              component_outputs: {
-                ...data.component_outputs,
-                colorDetails: JSON.parse(data.component_outputs.colorDetails)
-              }
-            }
-          } else {
-            return data
-          }
-        })
-        .sort((a: ChatHistory, b: ChatHistory) => {
-          return new Date(a.chat.createdAt).getTime() - new Date(b.chat.createdAt).getTime();
+      setChatHistory(chatHistory.sort((a: ChatHistory, b: ChatHistory) => {
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
         })
       );
     } catch (error) {
@@ -135,12 +109,12 @@ export default function Chat() {
               <p className="font-afacad text-lg">{initialMessage}</p>
             </div>}
             {chatHistory.map(m => {
-              return <motion.div key={m.chat.id} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.5 }}>
+              return <motion.div key={m.id} initial={{ scale: 0 }} animate={{ scale: 1 }} transition={{ duration: 0.5 }}>
                 <div className="whitespace-pre-wrap z-2 mb-4">
-                  <UserCard message={{ id: m.chat.id, content: m.chat.question, experimental_attachments: [] }} />
+                  <UserCard message={{ id: m.id, content: m.question, experimental_attachments: [] }} />
                 </div>
                 <div className="whitespace-pre-wrap z-2">
-                  <BotCard message={{ role: 'assistant', content: m.chat.response, id: m.chat.id, parts: [] }} componentOutput={m.component_outputs} />
+                  <BotCard message={{ role: 'assistant', content: m.response, id: m.id, parts: [] }} />
                 </div>
               </motion.div>
             })}
