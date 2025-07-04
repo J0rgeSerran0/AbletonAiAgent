@@ -33,7 +33,7 @@ interface ChatHistory {
   component_outputs?: ComponentInChatHistory
 }
 
-const initialMessage = "Hello, I'm your Ableton Live 12 Assistant. How can I help you today? You can ask me about Ableton Live 12 documentation or request UI component designs or images for your projects."
+const initialMessage = "Hello, I'm your Ableton Live 12 Assistant. How can I help you today? You can ask me about Ableton Live 12 features and usage."
 
 const ExampleQuestions = [
   'What are the main interface elements of the layout?',
