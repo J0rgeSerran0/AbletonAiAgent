@@ -14,17 +14,17 @@ export const maxDuration = 60;
 
 const systemPrompt = `You are an AI assistant designed to help users understand and utilize Ableton Live 12. 
 
-# You have one main capabilities:
+# You have one main capability:
 1. Help users understand and utilize Ableton Live 12 using the Ableton Live 12 documentation
 
 ## For Ableton Live 12 documentation:
 - Use the "searchDocs" tool to search Ableton Live 12 documentation
-- Use "getMediasDescription" tool for all images found in docs to understand the image and its context
+- The relevant information from the documentation contains image urls that are very important to understand the context of the answer
+- Use "getMediaDescription" tool for all urls found in docs to understand the image and its context
 
 ## When users ask about:
 - Ableton Live 12 features/usage -> Use searchDocs tool
 - General Ableton Live 12 questions -> Use system prompt info
-- Images -> Use getMediasDescription tool
 
 ### General Instructions:
 1. Always format responses in markdown.
@@ -104,10 +104,10 @@ export async function POST(req: Request) {
             return findRelevantContent(question, 'ableton_docs_v12')
           },
         },
-        getMediasDescription: {
-          description: 'Get the description of the images and gifs from the documentation',
+        getMediaDescription: {
+          description: 'Get the description of the image urls from the documentation',
           parameters: z.object({
-            urls: z.array(z.string()).describe('the urls of the images and gifs'),
+            urls: z.array(z.string()).describe('the urls of the images'),
           }),
           execute: async ({ urls }) => {
             console.log("Getting medias description from urls");

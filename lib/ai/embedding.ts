@@ -92,6 +92,7 @@ export const generateEmbedding = async (value: string): Promise<number[]> => {
 };
 
 export const findRelevantContent = async (userQuery: string, source: string) => {
+    const log = false
     try {
         const userQueryEmbedded = await generateEmbedding(userQuery);
         const similarity = sql<number>`1 - (${cosineDistance(
@@ -115,14 +116,14 @@ export const findRelevantContent = async (userQuery: string, source: string) => 
             if (!result.find(r => r.id === embedding.resourceId)) {
                 // Check if the resource token count will exceed max token count
                 if(tokenCount + resourceContentWithExtraLinesRemoved.length > MAX_TOKEN_COUNT) {
-                    console.log(`Resource ${embedding.resourceTitle} token count will exceed max token count: current count ${tokenCount}`)
+                    log && console.log(`Resource ${embedding.resourceTitle} token count will exceed max token count: current count ${tokenCount}`)
                     // Check if the embedding token count will not exceed max token count
                     if(tokenCount + embedding.content.length < MAX_TOKEN_COUNT) {
-                        console.log(`Embedding ${embedding.resourceTitle} token count will not exceed max token count: current count ${tokenCount}`)
+                        log && console.log(`Embedding ${embedding.resourceTitle} token count will not exceed max token count: current count ${tokenCount}`)
                         result.push({ content: embedding.content, id: embedding.resourceId, title: embedding.resourceTitle, description: embedding.resourceDescription })
                         tokenCount += embedding.content.length
                     } else {
-                        console.log(`Resource ${embedding.resourceTitle} token count will exceed max token count: current count ${tokenCount}`)
+                        log && console.log(`Resource ${embedding.resourceTitle} token count will exceed max token count: current count ${tokenCount}`)
                         break
                     }
                 } else {
@@ -131,7 +132,7 @@ export const findRelevantContent = async (userQuery: string, source: string) => 
                 }
             }
         }
-        console.log(`Token count: ${tokenCount}`);
+        log && console.log(`Token count: ${tokenCount}`);
         return result;
     } catch (error) {
         console.error(error);
