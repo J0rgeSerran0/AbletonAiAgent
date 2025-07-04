@@ -3,7 +3,7 @@
 import { Message, useChat } from '@ai-sdk/react';
 import { UserCard } from '@/components/ui/userCard';
 import { BotCard } from '@/components/ui/botCard';
-import { FaPaperPlane, FaPlus, FaRobot, FaShareAlt } from 'react-icons/fa';
+import { FaPaperPlane, FaPlus, FaShareAlt, FaBars } from 'react-icons/fa';
 import Image from 'next/image';
 import { motion } from "motion/react"
 import { useEffect, useRef, useState } from 'react';
@@ -12,6 +12,7 @@ import { generateId } from 'ai';
 import { toast } from "sonner"
 import { Button } from '@/components/ui/button';
 import { saEvent } from './analytics';
+import { LateralMenu } from '@/components/ui/lateralMenu';
 
 interface ChatHistory {
   id: string;
@@ -48,6 +49,7 @@ export default function Chat() {
   const [sessionId, setSessionId] = useState('Default');
   const [chatHistory, setChatHistory] = useState<ChatHistory[]>([]);
   const [isLoadingChatHistory, setIsLoadingChatHistory] = useState(false);
+  const [openLateralMenu, setOpenLateralMenu] = useState(false);
   const { messages, input, handleInputChange, handleSubmit, append, isLoading } = useChat({ maxSteps: 5, onError: () => setError(true), body: { sessionId } });
 
   const getChatHistory = async (sessionId: string) => {
@@ -75,13 +77,6 @@ export default function Chat() {
     setSessionId(generateId());
   }, []);
 
-  const handleShare = () => {
-    saEvent('share_link_button_clicked');
-    const shareUrl = `${window.location.origin}?sessionId=${sessionId}`;
-    navigator.clipboard.writeText(shareUrl);
-    toast("Share link copied to clipboard!")
-  }
-
   return (
     <div className="flex flex-col w-screen h-screen stretch overflow-hidden bg-[url('/background_full.jpg')] bg-cover bg-center relative">
       <div className="flex items-center justify-center w-full space-y-1 backdrop-blur-md absolute top-0 right-0 left-0 z-10 bg-white/30">
@@ -93,9 +88,12 @@ export default function Chat() {
               <p className="font-afacad text-sm md:text-base text-[#232323]">Get expert answers to Ableton Live 12 questions and learn with AI-powered assistance for your skill level.</p>
             </div>
           </div>
-          {chatHistory.length === 0 && <div className='flex items-center justify-center w-[36px] h-[36px] rounded-full bg-white/30 cursor-pointer hover:bg-white/50 ml-auto flex-shrink-0' onClick={handleShare}>
+          <div className='flex items-center justify-center w-[36px] h-[36px] rounded-full bg-white/30 cursor-pointer hover:bg-white/50 ml-auto flex-shrink-0' onClick={() => setOpenLateralMenu(!openLateralMenu)}>
+            <FaBars className="text-[#232323]" />
+          </div>
+          {/* {chatHistory.length === 0 && <div className='flex items-center justify-center w-[36px] h-[36px] rounded-full bg-white/30 cursor-pointer hover:bg-white/50 ml-auto flex-shrink-0' onClick={handleShare}>
             <FaShareAlt className="text-[#232323]" />
-          </div>}
+          </div>} */}
         </div>
       </div>
       <div className='flex flex-col justify-center items-start md:items-center bg-white bg-opacity-30 h-full'>
@@ -178,6 +176,12 @@ export default function Chat() {
           </Button>
         </div>}
       </div>
+      <LateralMenu 
+        sessionId={sessionId} 
+        isShareEnabled={chatHistory.length === 0} 
+        isOpen={openLateralMenu}
+        onClose={() => setOpenLateralMenu(false)}
+      />
     </div>
   );
 }
