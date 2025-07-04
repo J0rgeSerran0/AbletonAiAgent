@@ -2,12 +2,10 @@ import { Message } from 'ai';
 import ReactMarkdown from 'react-markdown';
 import { PiCoffeeFill } from "react-icons/pi";
 import Image from 'next/image';
-import { ComponentInChatHistory } from '@/app/page';
 
 
 
-// Hey, can you create a modern product card for my online store using blue (#3A5199) for buttons, yellow (#F8C630) for highlights, and white background with dark text? Include a product image, name, price, star rating, "Add to Cart" button, and save icon. Make it clean with rounded corners and subtle hover effects, and ensure it's responsive for mobile. Thanks!
-export const BotCard = ({ message, componentOutput = undefined, onCopyToClipboard = () => {} }: { message: Message, componentOutput?: ComponentInChatHistory, onCopyToClipboard?: (clipboardData: string) => void }) => {
+export const BotCard = ({ message }: { message: Message }) => {
 
   const LinkRenderer = (props: any) => {
     return (
