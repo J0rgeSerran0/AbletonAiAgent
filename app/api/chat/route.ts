@@ -8,30 +8,10 @@ import { db } from '@/lib/db';
 import { chat } from '@/lib/db/schema/chat';
 import { eq } from 'drizzle-orm';
 import { waitUntil } from '@vercel/functions'
+import { freeTools, systemPrompt } from './freeModel';
 
 // Allow streaming responses up to 60 seconds
 export const maxDuration = 60;
-
-const systemPrompt = `You are an AI assistant designed to help users understand and utilize Ableton Live 12. 
-
-# You have one main capability:
-1. Help users understand and utilize Ableton Live 12 using the Ableton Live 12 documentation
-
-## For Ableton Live 12 documentation:
-- Use the "searchDocs" tool to search Ableton Live 12 documentation
-- The relevant information from the documentation contains image urls that are very important to understand the context of the answer
-- Use "getMediaDescription" tool for all urls found in docs to understand the image and its context
-
-## When users ask about:
-- Ableton Live 12 features/usage -> Use searchDocs tool
-- General Ableton Live 12 questions -> Use system prompt info
-
-### General Instructions:
-1. Always format responses in markdown.
-2. Ableton Live 12 is a very visual tool, so always try to include relevant images on the response.
-3. If no relevant information is found, ask for clarification.
-4. Remember: Ableton Live Live is fast, fluid and flexible software for music creation and performance. It comes with effects, instruments, sounds and all kinds of creative features—everything you need to make any kind of music.
-`
 
 const saveToDbPromise = (sessionId: string, lastUserMessage: any, response: string, modelId: string) => {
   return new Promise((resolve, reject) => {
@@ -94,27 +74,7 @@ export async function POST(req: Request) {
           }
         }
       },
-      tools: {
-        searchDocs: {
-          description: 'Search the Ableton documentation for information',
-          parameters: z.object({
-            question: z.string().describe('the users question'),
-          }),
-          execute: async ({ question }) => {
-            return findRelevantContent(question, 'ableton_docs_v12')
-          },
-        },
-        getMediaDescription: {
-          description: 'Get the description of the image urls from the documentation',
-          parameters: z.object({
-            urls: z.array(z.string()).describe('the urls of the images'),
-          }),
-          execute: async ({ urls }) => {
-            console.log("Getting medias description from urls");
-            return getMediasDescriptionFromUrl(urls)
-          },
-        },
-      },
+      tools: freeTools,
     });
 
     return result.toDataStreamResponse({
