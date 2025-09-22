@@ -67,11 +67,21 @@ GOOGLE_GENERATIVE_AI_API_KEY=<your_google_generative_ai_api_key>
    yarn dev
    ```
 
-2. **RUn the web scraping script**:
+2. **Run the web scraping script**:
    - The web scraping API is available at `./scripts/script`.
    - **First run**: The GET endpoint reads `urls.md`, extracts text content from each page, and creates text embeddings for each resource in the database.
-   - **Second run**: The GET endpoint processes all images from previously scraped pages, creates descriptions for them using Google's Generative AI, and stores these as media resources in the database.
-   
+   - **Second run**: The GET endpoint processes all images from previously scraped pages, creates descriptions for them using Google's Generative AI, and stores these as media resources in the database. 
+
+   </br>
+
+   ```bash
+   pnpm run scrap
+   # or
+   yarn scrap
+   ```
+
+   >  [!TIP]
+   >  Remember to add the environmental variables so you can run the script without errors
 
 ### Database Schema
 
